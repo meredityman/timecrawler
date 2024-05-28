@@ -2,37 +2,46 @@ from pathlib import Path
 from collections import defaultdict
 import logging
 from datetime import datetime
-import random
+from PIL import Image, ImageDraw, ImageFont
 
-def get_files(args, timecrawler):
-    import shutil
-    assert(args.input_dir is not None)
+def visualize(args, timecrawler):
 
-    input_dir = Path(args.input_dir)
-    assert(input_dir.exists() and input_dir.is_dir())
+    N = len(timecrawler)
 
-    creation_dates = defaultdict(list)
-    for file in Path(input_dir ).glob("*"):
-        if file.is_file():
-            date = datetime.fromtimestamp(file.stat().st_ctime)
-            date = date.replace(hour=0, minute=0, second=0, microsecond=0)
-            timestamp = date.strftime("%Y-%m-%d")
-            creation_dates[timestamp].append(file.absolute())
-            logging.debug(f"File: {file} -> {timestamp}")
 
-    for day in timecrawler:
-        # print(date)
-        timestamp = day.timestamp
-        if timestamp in creation_dates:
-            candidates = creation_dates[timestamp]
-            random_file = candidates[random.randint(0, len(candidates) - 1)]
-            file_path = Path(day.directory, f"get_files_{input_dir.name}{random_file.suffix}")
-            shutil.copy(random_file, file_path)
-            logging.info(f"File copied: {random_file} -> {file_path}")
-            day.update_channel("get_files", [file_path], {
-                "source": str(random_file)
-            })
-        else:
-            pass
-            # logging.warning(f"No files for '{date}'")
+    images = []
+    for i, day in enumerate(timecrawler):
         
+        img = Image.new('RGB', (64, 64), color = (255, 255, 255))
+
+        if "get_files" in day.channels:
+            try:
+                img_path = day.channels["get_files"].json()["files"][0]
+                _img = Image.open(img_path)
+                img.paste(_img, (0, 0))
+            except Exception as e: 
+                logging.error(f"Error loading image: {e}")
+            
+
+        draw = ImageDraw.Draw(img)
+        font = ImageFont.load_default()
+
+        text = f"{day.timestamp}"
+        draw.text((0, 0), text, (0,0,0), font=font)
+
+        if "death" in day.channels:
+            text = day.channels["death"].json()["data"]["name"].encode("utf-8")
+            draw.text((0, 16), text, (0,0,0), font=font)
+
+        images.append(img)
+
+    # Compositie images in a grid with 7 Columns
+    width = 64 * 7
+    height = 64 * (N // 7 + 1)
+    collage = Image.new('RGB', (width, height), color = (0, 0, 0))
+    for i, img in enumerate(images):
+        x = 64 * (i % 7)
+        y = 64 * (i // 7)
+        collage.paste(img, (x, y))
+
+    collage.save("collage.png")

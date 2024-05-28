@@ -123,6 +123,8 @@ class TimeCrawler:
     def __getitem__(self, key):
         return self.days[key]
 
+    def __len__(self):
+        return len(self.days)
 
     def info(self):
         info = f"TimeCrawler: {self.root_path}, {self.start_date} - {self.end_date}\n"
