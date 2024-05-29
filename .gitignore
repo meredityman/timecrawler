@@ -4,6 +4,8 @@ data/*
 *.png
 *.jpg
 *.bmp
+*.JPG
+*.PNG
 
 *.code-workspace
 
