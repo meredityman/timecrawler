@@ -3,6 +3,7 @@ data/*
 
 *.png
 *.jpg
+*.bmp
 
 *.code-workspace
 
