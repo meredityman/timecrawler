@@ -8,7 +8,6 @@ def visualize(args, timecrawler):
 
     N = len(timecrawler)
 
-
     images = []
     for i, day in enumerate(timecrawler):
         
@@ -30,8 +29,18 @@ def visualize(args, timecrawler):
         draw.text((0, 0), text, (0,0,0), font=font)
 
         if "death" in day.channels:
-            text = day.channels["death"].json()["data"]["name"].encode("utf-8")
+            death_data = day.channels["death"].json()["data"]
+            text = death_data["name"] 
             draw.text((0, 16), text, (0,0,0), font=font)
+            print(death_data)
+
+            
+            files = day.channels["death"].json()["files"]
+            if len(files) > 0:
+                img_path = files[0]
+                _img = Image.open(img_path)
+                _img.thumbnail((64, 64))
+                img.paste(_img, (0, 32))
 
         images.append(img)
 

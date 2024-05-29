@@ -1,6 +1,6 @@
 from pathlib import Path
 import logging
-import datetime as datetime
+from datetime import datetime
 from collections import OrderedDict
 import shutil
 import json
@@ -171,10 +171,10 @@ class TimeCrawler:
                 for day in month.iterdir():
                     if not day.is_dir():
                         continue
-                    date = datetime.datetime.strptime(day.name.split("_")[0], "%Y-%m-%d").date()
+                    date = datetime.strptime(day.name.split("_")[0], "%Y-%m-%d").date()
                     timestamp = date.strftime("%Y-%m-%d")
                     self.days[timestamp] = Day(date, self.root_path)
         if len(self.days) > 0:
-            self.start_date = min(self.days.keys())
-            self.end_date = max(self.days.keys())
+            self.start_date = datetime.strptime(min(self.days.keys()), "%Y-%m-%d").date()
+            self.end_date   = datetime.strptime(max(self.days.keys()), "%Y-%m-%d").date()
 
