@@ -33,6 +33,9 @@ if __name__ == "__main__":
     elif args.command == "get_deaths":
         from timecrawler.wikipedia import get_deaths
         get_deaths(args, timecrawler)
+    elif args.command == "get_events":
+        from timecrawler.wikipedia2 import get_events
+        get_events(args, timecrawler)
     elif args.command == "get_weather":
         from timecrawler.get_weather import get_weather
         get_weather(args, timecrawler)
