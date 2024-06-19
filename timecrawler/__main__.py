@@ -39,7 +39,9 @@ if __name__ == "__main__":
     elif args.command == "get_weather":
         from timecrawler.get_weather import get_weather
         get_weather(args, timecrawler)
-
+    elif args.command == "get_poem":
+        from timecrawler.poem import get_poem
+        get_poem(args, timecrawler)
 
     # Outputs
     elif args.command == "visualize":

@@ -1,6 +1,6 @@
 from pathlib import Path
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 from collections import OrderedDict
 import shutil
 import json
@@ -82,6 +82,13 @@ class Day:
 
         self._save_metadata()
 
+
+    def get_channel_data(self, channel):
+        if channel in self.channels:
+            return self.channels[channel].json()
+        else:
+            return None
+
     def info(self):
         info = f"Day: {self.date}\n"
         for channel in self.channels.values():
@@ -143,14 +150,13 @@ class TimeCrawler:
         self = TimeCrawler(self.root_path)
 
     def create_tree(self, start_date: datetime.date, end_date: datetime.date):
-        assert(type(start_date) == datetime.date)
-        assert(type(end_date) == datetime.date)
+
         assert(start_date <= end_date)
 
         self.start_date = start_date
         self.end_date = end_date
 
-        dates = [start_date + datetime.timedelta(days=i) for i in range((end_date - start_date).days + 1)]
+        dates = [start_date + timedelta(days=i) for i in range((end_date - start_date).days + 1)]
 
         for date in dates:
             timestamp = date.strftime("%Y-%m-%d")
