@@ -7,5 +7,5 @@ setup(name='timecrawler',
       author='Meredith Thomas',
       author_email='meredityman@gmail.com',
       license='MIT',
-      packages=['winterfell'],
+      packages=['timecrawler'],
       zip_safe=False)
